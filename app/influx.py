@@ -1,8 +1,6 @@
 # Influx DB API Connection via Authiato 
 import os
-#import pydantic
 from influxdb import InfluxDBClient
-
 
 class WrapperInfluxDB:
     def __init__(self, host, username, password, port, database, ssl=True, verify_ssl=True):

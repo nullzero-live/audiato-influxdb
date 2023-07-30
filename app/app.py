@@ -2,12 +2,13 @@
 import os
 import joblib
 from dotenv import load_dotenv
-
-from influxdb import WrapperInfluxDB
+from fastapi import FastAPI
+from influx import WrapperInfluxDB
 from utils import DataIn, predict_route
 
 # Put all environment variables in a .env file
 load_dotenv()
+
 app = FastAPI()
 
 #Establish connection to InfluxDB
@@ -28,6 +29,9 @@ def main():
         prediction = model.predict(input_data)
         
         return {"prediction": prediction.tolist()}
+    
+    def detect_notify():
+        pass
 
     #Test client connection                         
     print(f"CLIENT IS: {client}")
@@ -35,8 +39,7 @@ def main():
     print("Successfully connected to InfluxDB: " + version)
     client.get_list_database()
 
-def detect_notify():
-    pass
+
 
 '''From classifier - save in  case needed
 #function for predictions from serialized models
