@@ -4,7 +4,6 @@ FROM python:3.10-slim
 
 # Allow statements and log messages to immediately appear in the logs
 
-
 # Copy local code to the container image.
 EXPOSE 8080
 ENV APP_HOME /app

@@ -11,28 +11,32 @@ load_dotenv()
 app = FastAPI()
 
 #Establish connection to InfluxDB
+def main():
+    client = WrapperInfluxDB(host=os.getenv("INFLUXDB_HOST"), 
+                            username=os.getenv("INFLUX_USER"), 
+                            password=os.getenv("INFLUX_PASS"), 
+                            port=8086, 
+                            database=os.getenv("INFLUX_DB"))
 
-client = WrapperInfluxDB(host=os.getenv("INFLUXDB_HOST"), 
-                         username=os.getenv("INFLUX_USER"), 
-                         password=os.getenv("INFLUX_PASS"), 
-                         port=8086, 
-                         database=os.getenv("INFLUX_DB"))
 
-#Test client connection                         
-print(f"CLIENT IS: {client}")
-version = client.client.ping()
-print("Successfully connected to InfluxDB: " + version)
-client.get_list_database()
+    @app.post("/predict")
+    async def predict_route(data_in: DataIn):
+        #model - does this belong here?????
+        model = joblib.load('influx-model.pkl')
+        # Convert the incoming data to the format expected by your model
+        input_data = [[data_in.feature1, data_in.feature2]]
+        prediction = model.predict(input_data)
+        
+        return {"prediction": prediction.tolist()}
 
-@app.post("/predict")
-async def predict_route(data_in: DataIn):
-    #model - does this belong here?????
-    model = joblib.load('model.pkl')
-    # Convert the incoming data to the format expected by your model
-    input_data = [[data_in.feature1, data_in.feature2]]
-    prediction = model.predict(input_data)
-    
-    return {"prediction": prediction.tolist()}
+    #Test client connection                         
+    print(f"CLIENT IS: {client}")
+    version = client.client.ping()
+    print("Successfully connected to InfluxDB: " + version)
+    client.get_list_database()
+
+def detect_notify():
+    pass
 
 '''From classifier - save in  case needed
 #function for predictions from serialized models
