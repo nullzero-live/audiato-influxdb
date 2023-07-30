@@ -2,7 +2,6 @@
 import os
 #import pydantic
 from influxdb import InfluxDBClient
-import json
 
 
 class WrapperInfluxDB:
@@ -29,14 +28,7 @@ class WrapperInfluxDB:
     def close_connection(self):
         self.client.__del__()
     
-#Establish connection to InfluxDB
 
-client = WrapperInfluxDB(host='influxdb.hs88.live/', 
-                         username='p4rlx', password='Unacceptable', port=8086, database="logmon")
-print(f"CLIENT IS: {client}")
-version = client.client.ping()
-print("Successfully connected to InfluxDB: " + version)
-#client.get_list_database()
 
 
    

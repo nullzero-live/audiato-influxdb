@@ -1,24 +1,44 @@
 
-from fastapi import FastAPI
-from pydantic import BaseModel
+import os
 import joblib
+from dotenv import load_dotenv
 
-def predict(input_data):
-    model = joblib.load('model.pkl')
-    prediction = model.predict(input_data)
-    return prediction
+from influxdb import WrapperInfluxDB
+from utils import DataIn, predict_route
 
+# Put all environment variables in a .env file
+load_dotenv()
 app = FastAPI()
 
-class DataIn(BaseModel):
-    feature1: float
-    feature2: float
-    # Add more features if necessary
+#Establish connection to InfluxDB
+
+client = WrapperInfluxDB(host=os.getenv("INFLUXDB_HOST"), 
+                         username=os.getenv("INFLUX_USER"), 
+                         password=os.getenv("INFLUX_PASS"), 
+                         port=8086, 
+                         database=os.getenv("INFLUX_DB"))
+
+#Test client connection                         
+print(f"CLIENT IS: {client}")
+version = client.client.ping()
+print("Successfully connected to InfluxDB: " + version)
+client.get_list_database()
 
 @app.post("/predict")
 async def predict_route(data_in: DataIn):
+    #model - does this belong here?????
+    model = joblib.load('model.pkl')
     # Convert the incoming data to the format expected by your model
     input_data = [[data_in.feature1, data_in.feature2]]
-    prediction = predict(input_data)
+    prediction = model.predict(input_data)
+    
     return {"prediction": prediction.tolist()}
+
+'''From classifier - save in  case needed
+#function for predictions from serialized models
+def predict(input_data):
+    model = joblib.load('model.pkl')
+    prediction = model.predict(input_data)
+    return prediction '''
+
 
