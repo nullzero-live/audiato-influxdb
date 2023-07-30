@@ -1,5 +1,5 @@
 import unittest
-from app.influxdb import WrapperInfluxDB
+from app.influx import WrapperInfluxDB
 
 
 class TestWrapperInfluxDB(unittest.TestCase):

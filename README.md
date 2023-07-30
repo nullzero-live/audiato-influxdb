@@ -18,3 +18,4 @@ Collecting live log data information and modelling it using SKLearn (Live model)
 - [ ] Choose and create model pipeline
 - [ ] Specialize FastAPI endpoint
 - [ ] Choose logging and notification method
+- [ ] Fix Tests (Module paths)

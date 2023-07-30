@@ -1,19 +1,19 @@
 
 import os
 import joblib
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI
 from influx import WrapperInfluxDB
-from utils import DataIn, predict_route
+from utils import DataIn
 
 # Put all environment variables in a .env file
-load_dotenv()
+load_dotenv(find_dotenv())
 
 app = FastAPI()
 
 #Establish connection to InfluxDB
 def main():
-    client = WrapperInfluxDB(host=os.getenv("INFLUXDB_HOST"), 
+    client = WrapperInfluxDB(host=os.getenv("INFLUX_HOST"), 
                             username=os.getenv("INFLUX_USER"), 
                             password=os.getenv("INFLUX_PASS"), 
                             port=8086, 
@@ -31,7 +31,12 @@ def main():
         return {"prediction": prediction.tolist()}
     
     def detect_notify():
-        pass
+        prediction = 1
+        if prediction == 1:
+            alert = "Placeholder for notification function"
+        else:
+            alert = "No notification required"
+        return alert
 
     #Test client connection                         
     print(f"CLIENT IS: {client}")
